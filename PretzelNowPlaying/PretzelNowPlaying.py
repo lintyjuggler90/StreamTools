@@ -13,14 +13,12 @@ import random
 import datetime
 from subprocess import check_output, CalledProcessError
 
-# Save the API URI, ScriptPath, FilePath, and LogPath for repeat use
+# Save the ScriptPath, FilePath, DataPath, and LogPath for repeat use
 ScriptPath = os.path.dirname(os.path.abspath(__file__))
 FilePath = ScriptPath + "/PretzelTrack.txt"
 LogPath = ScriptPath + "/PretzelNowPlaying.log"
 DataPath = ScriptPath + "/PretzelNowPlaying.dat"
 CurrentSong = ""
-
-
 
 def main():
     # Check if OBS is running
@@ -61,8 +59,11 @@ def main():
             except:
                 Retry = True
         Song = (Response.text.split(':'))[1].split("->")[0].strip()
-        File = open(FilePath, "r")
-        FileSong = File.read()
+        if os.path.exists(FilePath):
+            File = open(FilePath, "r")
+            FileSong = File.read()
+        else:
+            FileSong = ""
         # Write the song to file if it does not match the song recorded in the file.
         if Song[:88] != FileSong[:88]:
             # Save data to file and close.
